@@ -6,7 +6,7 @@ function App() {
       id: "e1",
       title: "Toilet Paper",
       amount: 94.12,
-      date: new Date(2020, 7, 14),
+      date: new Date(2020, 7, 1),
     },
     {
       id: "e2",
@@ -30,7 +30,6 @@ function App() {
 
   return (
     <div>
-      <h2>Let's get started!</h2>
       <ExpenseItem
         title={expenses[0].title}
         amount={expenses[0].amount}
