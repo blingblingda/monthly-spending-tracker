@@ -83,5 +83,15 @@ export default App;
 2. 新建 NewExpense 文件夹存放与用户新增 expense 的表单数据文件
 3. 新建 NewExpense 组件，引进相应 css，目前仅 return 一个 ExpenseForm 组件。因该组件与 Expense 大组件平行，在 App 中插入即可显示。
 4. 新建 ExpenseForm 组件
-   1）因为这里是用户输入内容并提交的表单，所以整体用表单包裹
-   2）
+   1. 因为这里是用户输入内容并提交的表单，所以整体用表单包裹
+   2. 表单中包含两部分，第一部分是 3 个 input 内容区，第二部分是提交按钮。 3) input 区域：第一个 div 放 title 的输入框，第二个 div 放 Amount 的输入框（规定 min&step step 指规定几位小数），第三个 div 放 Date 的输入框（规定 min&max） 4) submit button 区域：div 包裹一个 button type 为 submit
+5. Listening to and store User Input (get the value the user entered and store that in state.)
+   1. 需要监听输入内容，就是每一次改变都要触发 function，因为是自己的改变，所以可以直接拿 event 的属性即可拿到输入内容。onChange+event 组合，即可拿到用户输入框输入数据。
+   2. 使用 useState 存储拿到的数据。(用两种写法，逐条写或者合并到一个 useState 里写)
+6. Handling form submission
+   1. 不要直接在 button 上加 onClick 事件。这种放在 form 里面的、type 为 submit 的 button，提交事件函数应该放在 form 里 onSubmit
+   2. 使用 event 里自带的 preventDefault 方法: we can stay on the current loaded page without sending any request anywhere, and can continue handling this with JS.
+   3. const 一个对象 expenseData,存放三个最新状态（注意时间需要转换为 default 格式）
+   4. 提交后自动清空 input：two-way binding: for inputs we don't just listen to changes, but can also pass a new value back into the input. so we can reset or change the input programmatically.
+   1) 给 input 增加 value 属性，等于目前 state
+   2) 在 submitHandler function 中，当收集了所有 state 之后，再使用 setState 把所有 state 归为‘’，这样 value 一等就等于‘’了。
