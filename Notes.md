@@ -58,6 +58,7 @@ export default App;
       2. 新建一个对应的 Card.css，把重复的 css 放进来。原来两个 css 中的重复内容就可以删掉了。但注意在两个 component 中使用 card 时，className 需要同时使用 card 公用+自己独立的，不然 card 公用的 css 不生效。所以需要在 Card.js 里面 const 一个合并的 classes，然后引入 div，这样别的组件直接用就可以了。
    3. we are able to extract some code duplication from inside CSS code and HTML code and JSX code into this separate wrapper component, which allow you to save a lot of code duplication and keep your other components clean.
 10. 把 component 按照 UI 和功能分文件夹，另外引入 react 还是必要的。可以把所有 function 换成 arrow function。
+    **finished Expense Components with static data**
 11. quiz:
     1. which kind of code do you write when using React.js?
        Declarative JavaScript Code. With React.js, you define the "goal" (i.e. what should be shown on the screen) and let React figure out how to get there.
@@ -85,6 +86,7 @@ export default App;
 4. 新建 ExpenseForm 组件
    1. 因为这里是用户输入内容并提交的表单，所以整体用表单包裹
    2. 表单中包含两部分，第一部分是 3 个 input 内容区，第二部分是提交按钮。 3) input 区域：第一个 div 放 title 的输入框，第二个 div 放 Amount 的输入框（规定 min&step step 指规定几位小数），第三个 div 放 Date 的输入框（规定 min&max） 4) submit button 区域：div 包裹一个 button type 为 submit
+      **create form input section**
 5. Listening to and store User Input (get the value the user entered and store that in state.)
    1. 需要监听输入内容，就是每一次改变都要触发 function，因为是自己的改变，所以可以直接拿 event 的属性即可拿到输入内容。onChange+event 组合，即可拿到用户输入框输入数据。
    2. 使用 useState 存储拿到的数据。(用两种写法，逐条写或者合并到一个 useState 里写)
@@ -93,8 +95,9 @@ export default App;
    2. 使用 event 里自带的 preventDefault 方法: we can stay on the current loaded page without sending any request anywhere, and can continue handling this with JS.
    3. const 一个对象 expenseData,存放三个最新状态（注意时间需要转换为 default 格式）
    4. 提交后自动清空 input：two-way binding: for inputs we don't just listen to changes, but can also pass a new value back into the input. so we can reset or change the input programmatically.
-   1) 给 input 增加 value 属性，等于目前 state
-   2) 在 submitHandler function 中，当收集了所有 state 之后，再使用 setState 把所有 state 归为‘’，这样 value 一等就等于‘’了。
+   5) 给 input 增加 value 属性，等于目前 state
+   6) 在 submitHandler function 中，当收集了所有 state 之后，再使用 setState 把所有 state 归为‘’，这样 value 一等就等于‘’了。
+      **gather expenseData and clear inputs**
 7. Pass the data (collecting and generating in expense form) to the app component. 子传父
    1. 父组件里的子组件标签设置需要传递的事件 onSaveExpenseData，每次子组件中调用该事件，则触发对应函数 saveExpenseDataHandler
    2. 定义该处理函数, 该函数被触发后会收到一个子组件传过来的一个参数 enteredExpenseData, 真正存起来的 data 应该是除了子组件拿过来的 3 个内容之外还要增加一个 id，因此在函数体中 const 一个新对象 expenseData，里面存储收过来的 enteredExpenseData 的所有内容，以及新增一个 id。这样 expenseData 就是我们最终需要的 data 了。
@@ -116,6 +119,7 @@ export default App;
    2. 在 filter 组件中显示 select 时，给定一个 value 属性为接收到的 filteredYear
 7. filter 其实并没有函数逻辑在里面，他只是输出展示页面，真正的 function 和逻辑提取数据储存都在父组件 expense 中，filter 只是接受了父组件定义好的函数，把自己的参数传进去而已。
 8. dumb&smart component， stateless&state component:只是名字状态不同，一个没有包含管理 state，一个有管理 state 而已。
+   **Lifting State up among ExpForm NewExp and App**
 9. quiz：
    1. How can you communicate from one of your components to a parent (i.e. higher level) component?
       you can accept a function via props and call it from inside the lower-level(child) component to then trigger some action in the parent component (which passed the function)
@@ -130,3 +134,17 @@ setCounter(counter + 1);
 ```
 
       If you update state that depends on the previous state, you should use the "function form" of the state updating function instead.
+
+## render Expense list
+
+1. 动态显示已有的 expenses 列表。render Expenses dynamically
+   1. 目前在 Expenses 组件中展示 ExpenseItem 的方法是逐一列出然后分别传参，需要改为根据 App 组件传过来的数据 array 动态生成
+   2. 拿到 App 传过来的数据组，在该数组的基础上使用 map 把每一个对象逐一转换成所需要的 JSX 展示格式(注意用 map 的话需要在转换后的内容里增加 key)
+2. 动态插入新增 expense 到原有 expenses 列表
+   1. 把之前 dummyExpense 拿出去，在组件中建立 state，default 是 dummyExpense
+   2. 之前已经写过把子组件中新增的那个 expense 传到 app 里，但是把这条 expense 增加到 state 里面呢？if you update your state depending on the previous state, you should use this special function form for this state updating function. 不能直接用[xx, ...xxx]的形式，应该是 prevExpenses => {return[xx, ...prevExpenses]}
+   3. add key to help React identify the individual items.
+3. 按照所选年份筛选 expense list
+   1. 一开始的思路反了，本来是想在已经 map 好的 list 中用 filter 筛出符合 year 条件的 expense，但问题是如果已经 map 好了说明 data 的格式已经成功转换为 JSX 显示 component，其实就不是 array 的 data 也就没办法 filter 了。因此应该先用 filter 从 App 传过来的原始 items array 中把符合条件的筛出来组成新的 array，之后再用 map 把这部分 array transfer 成 component 格式。
+   2. const 一个 filteredExpense 的 array，用 filter 筛出符合条件的
+   3. 对这个新 array 进行 map
