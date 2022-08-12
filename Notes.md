@@ -103,3 +103,30 @@ export default App;
    1. 定义一个处理函数用于接收子组件的数据并增加到父组件 App 数据库中。
    2. 把该处理函数通过名字 onAddExpense 传给 NewExpense 组件。
    3. 到子组件 NewExpense 中接收并 call 这个函数，把要传递的信息作为参数传过去。passing data to that function, we are lifting that data that state up, we are not keeping it in NewExpense component, instead, we are lifting it up to the App component. Lifting State Up: moving data from a child component to some parent component to either use it there or to then pass it down to some other child component.
+
+## 新增 ExpenseFilter
+
+1. 给 select tag 增加监听事件拿到用户所选年份
+2. 把 filter 组件插入 expense 组件中
+3. 在 expense 组件中设定一个接收函数，并把这个函数传给 filter 组件。
+4. filter 接收这个函数，把用户选择的年份作为参数传过去
+5. expense 接到这个参数，并把它更新在相应的 state 中。注意，filter 组件只负责拿到并传送用户选择的年份，并不负责储存年份。年份应该被储存在父组件 expense 中。
+6. 如何把 expense 中 useState 的 default year 显示在 filter 里面
+   1. 把当前的 filteredYear 传给 Filter 组件
+   2. 在 filter 组件中显示 select 时，给定一个 value 属性为接收到的 filteredYear
+7. filter 其实并没有函数逻辑在里面，他只是输出展示页面，真正的 function 和逻辑提取数据储存都在父组件 expense 中，filter 只是接受了父组件定义好的函数，把自己的参数传进去而已。
+8. dumb&smart component， stateless&state component:只是名字状态不同，一个没有包含管理 state，一个有管理 state 而已。
+9. quiz：
+   1. How can you communicate from one of your components to a parent (i.e. higher level) component?
+      you can accept a function via props and call it from inside the lower-level(child) component to then trigger some action in the parent component (which passed the function)
+   2. Why do you need this extra "state" concept instead of regular JS variables which you change and use?
+      Because standard JS variables don't cause React components to be re-evaluated
+   3. What's wrong about this code snippet?
+
+```
+const [counter, setCounter] = useState(1);
+...
+setCounter(counter + 1);
+```
+
+      If you update state that depends on the previous state, you should use the "function form" of the state updating function instead.
