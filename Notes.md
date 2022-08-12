@@ -27,7 +27,7 @@ function App() {
 export default App;
 ```
 
-## ExpenseItem Components
+## Expense Components
 
 1. src 下建一个 components folder, index.js 和 App.js 还放在外面
 2. 新建 ExpenseItem.js 并导入 App，每个 component 里的 return 里面需要用一个大 div 包裹全部
@@ -72,3 +72,16 @@ export default App;
        It means that you have a root node which then has more components nested beneath it.
     6. How can you output dynamic data in React components (i.e. in the returned JSX code)?
        You can use single curly braces with any JS expression between them.
+
+## 新增 Form input
+
+1. 每个 Item 后面增加一个 button，点击 button 改变 title 内容
+   1. 增加 button，添加点击事件
+   2. 用 useState 拿到 title，并拆解为
+   3. 在事件处理函数中，使用 setTitle 改变 title 状态。
+   4. 更新 return 显示内容
+2. 新建 NewExpense 文件夹存放与用户新增 expense 的表单数据文件
+3. 新建 NewExpense 组件，引进相应 css，目前仅 return 一个 ExpenseForm 组件。因该组件与 Expense 大组件平行，在 App 中插入即可显示。
+4. 新建 ExpenseForm 组件
+   1）因为这里是用户输入内容并提交的表单，所以整体用表单包裹
+   2）
