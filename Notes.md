@@ -148,3 +148,64 @@ setCounter(counter + 1);
    1. 一开始的思路反了，本来是想在已经 map 好的 list 中用 filter 筛出符合 year 条件的 expense，但问题是如果已经 map 好了说明 data 的格式已经成功转换为 JSX 显示 component，其实就不是 array 的 data 也就没办法 filter 了。因此应该先用 filter 从 App 传过来的原始 items array 中把符合条件的筛出来组成新的 array，之后再用 map 把这部分 array transfer 成 component 格式。
    2. const 一个 filteredExpense 的 array，用 filter 筛出符合条件的
    3. 对这个新 array 进行 map
+      **render and filter expense list dynamically**
+
+## outputing conditional content
+
+1. 诉求：filter 的年份有东西时展示相应年份的 ExpenseItem，没有东西的时候展示一句话。
+2. 写法一：在最外层加一个三元表达式，如果 filterExpenses 的 length 为 0 就显示一个 p tag，否则就正常 map component.
+
+```
+        {filteredExpense.length === 0 ? (
+          <p>No expenses found</p>
+        ) : (
+          filteredExpense.map((expense) => (
+            <ExpenseItem
+              key={expense.id}
+              title={expense.title}
+              amount={expense.amount}
+              date={expense.date}
+            />
+          ))
+        )}
+```
+
+3. 写法二 abusing here: 使用&&连接。react 中如果前面 true，则显示&&后面的内容。这样可以避免三元表达式过长的问题，变成两个 condition.
+
+```
+        {filteredExpense.length === 0 && <p>No expenses found</p>}
+        {filteredExpense.length > 0 &&
+          filteredExpense.map((expense) => (
+            <ExpenseItem
+              key={expense.id}
+              title={expense.title}
+              amount={expense.amount}
+              date={expense.date}
+            />
+          ))}
+```
+
+4. 写法三：不要把逻辑直接卸载 return 里面，提炼到外面。一开始 const 一个变量 expensesContent，在外面用逻辑定义好这个变量的内容，return 里面直接展示该变量即可。
+
+```
+return上面：
+let expenseContent = <p>No expenses found.</p>;
+  if (filteredExpense.length > 0) {
+    expenseContent = filteredExpense.map((expense) => (
+      <ExpenseItem
+        key={expense.id}
+        title={expense.title}
+        amount={expense.amount}
+        date={expense.date}
+      />
+    ));
+
+return里面
+        {expenseContent}
+```
+
+5. 为了让 Expenses 更清晰，可以把 list 这一块单独拿出来。之前是 Expenses ->ExpenseItem，现在改为 Expenses -> ExpensesList -> ExpenseItem
+   1. Expenses 中把 filter 出来待 map 的 data 传递给 ExpensesList 组件
+   2. 在新的 ExpensesList 组件中稍微修改一下逻辑。在 return 的上面单独给一个 if 判断，如果没有数据，那么 return 一个 h2 标签（单独写样式）。这样正常的 return 正好就变成了 if 里面否则的 return，那么外面不要包 div，包一个 ul 给个样式，里面是 map 出的组件内容。
+   3. 由于在 list 里面用的是 ul 包裹每一个 expenseItem，所以在 item 组件中最外层应该由 li 包裹一下。
+6. default 是有两个 button：cancel+add expense，提交表单之后变成中间一个 Add New Expense 的按钮。
