@@ -95,3 +95,11 @@ export default App;
    4. 提交后自动清空 input：two-way binding: for inputs we don't just listen to changes, but can also pass a new value back into the input. so we can reset or change the input programmatically.
    1) 给 input 增加 value 属性，等于目前 state
    2) 在 submitHandler function 中，当收集了所有 state 之后，再使用 setState 把所有 state 归为‘’，这样 value 一等就等于‘’了。
+7. Pass the data (collecting and generating in expense form) to the app component. 子传父
+   1. 父组件里的子组件标签设置需要传递的事件 onSaveExpenseData，每次子组件中调用该事件，则触发对应函数 saveExpenseDataHandler
+   2. 定义该处理函数, 该函数被触发后会收到一个子组件传过来的一个参数 enteredExpenseData, 真正存起来的 data 应该是除了子组件拿过来的 3 个内容之外还要增加一个 id，因此在函数体中 const 一个新对象 expenseData，里面存储收过来的 enteredExpenseData 的所有内容，以及新增一个 id。这样 expenseData 就是我们最终需要的 data 了。
+   3. 因为父组件把该处理函数以 onSaveExpenseData 的方式传递给了子组件，因此在子组件中首先用 props 接收函数，然后在最后提交的 submitHandler 中调用，把收集整理好的 expenseData 放进去就可以传递给父组件了。
+8. 把最终版的 expenseData 传递给 App 的数据组中。
+   1. 定义一个处理函数用于接收子组件的数据并增加到父组件 App 数据库中。
+   2. 把该处理函数通过名字 onAddExpense 传给 NewExpense 组件。
+   3. 到子组件 NewExpense 中接收并 call 这个函数，把要传递的信息作为参数传过去。passing data to that function, we are lifting that data that state up, we are not keeping it in NewExpense component, instead, we are lifting it up to the App component. Lifting State Up: moving data from a child component to some parent component to either use it there or to then pass it down to some other child component.
