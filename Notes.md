@@ -209,3 +209,24 @@ return里面
    2. 在新的 ExpensesList 组件中稍微修改一下逻辑。在 return 的上面单独给一个 if 判断，如果没有数据，那么 return 一个 h2 标签（单独写样式）。这样正常的 return 正好就变成了 if 里面否则的 return，那么外面不要包 div，包一个 ul 给个样式，里面是 map 出的组件内容。
    3. 由于在 list 里面用的是 ul 包裹每一个 expenseItem，所以在 item 组件中最外层应该由 li 包裹一下。
 6. default 是有两个 button：cancel+add expense，提交表单之后变成中间一个 Add New Expense 的按钮。
+
+1) 误区：因为 form 是一个整体，因此两种状态的转换应该在 form 的父组件 NewExp 里面控制
+2) 目前 NewExp 里面只显示 ExpForm 组件，与之平行可以直接增加一个新 button（就是要单独显示的那个）
+3) 因为要在两种情况中切换，因此需要增加 state, default 为 false。
+4) return 里面用&&加判断，当前谁是 true 就展示谁：因为 isEditing 为 false，那么！isEditing 为 true，所以展示但 button。
+5) 给 button 增加一个 onClick 事件，改变 state 状态为 true。这样一旦点击 button，isEditing 就会变成 true，则展示 form 的内容。
+6) Form 组件中增加 cancel 按钮（type 纯按钮），添加点击事件，点击后会改变父组件 NewExp 中 isEditing 的状态，让单 button 为 true。(事件函数需要写在父组件中然后用 props 传递调用)
+7) 点击 submit button 后也需要回到单 button 状态，因此可以在提交 data 的 function 里顺便修改一下 isEditing 的状态为 false。
+   **Add New Expense button and state switch**
+
+## Adding Chart
+
+1. 分成两个组件做 Chart 和 ChartBar
+2. Chart 组件中如果 div 展示 12 个<ChartBar/>会非常麻烦，所以使用动态生成子组件方法--map！
+   假设 Chart 组件可以收到父组件传过来的一组 array 数据 dataPoints，那么就可以用 map 把每一个 dataPoint 转换为一个<ChartBar/>子组件，并顺手把每一个 dataPoint 里面需要展示在子组件 ChartBar 里面的内容传输过去(key,value,maxValue,label)
+3. CharBar 组件内容：最外层 div：chart-bar，包含两个 div：char-bar_inner 和 char-bar_label。inner 里面包含一个 div：char-bar_fill。
+   1. inner 作为一个整体柱子是有一个浅色背景的，然后 fill 作为 inner 的子元素有一个深色背景，这样只要算出接到的 value 占 maxValue 的比例，就可以把这个比例以高度等形式加入 fill 的 style 中，就会形成占比的 filter 展示了。
+   2. let 高度为 0%
+   3. 如果 max 大于 0，则高度为百分比
+   4. 把 fill 的高度设置为这个变量，这里 style 的设置外面的{}是 JSX react 要求，里面的{}是 object 对象，驼峰命名 xx：xxx
+      ** Added Chart & ChartBar**
