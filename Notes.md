@@ -227,6 +227,22 @@ return里面
 3. CharBar 组件内容：最外层 div：chart-bar，包含两个 div：char-bar_inner 和 char-bar_label。inner 里面包含一个 div：char-bar_fill。
    1. inner 作为一个整体柱子是有一个浅色背景的，然后 fill 作为 inner 的子元素有一个深色背景，这样只要算出接到的 value 占 maxValue 的比例，就可以把这个比例以高度等形式加入 fill 的 style 中，就会形成占比的 filter 展示了。
    2. let 高度为 0%
-   3. 如果 max 大于 0，则高度为百分比
+   3. 如果 maxValue 大于 0，则高度为百分比
    4. 把 fill 的高度设置为这个变量，这里 style 的设置外面的{}是 JSX react 要求，里面的{}是 object 对象，驼峰命名 xx：xxx
       ** Added Chart & ChartBar**
+4. ExpenseChart
+   1. 由于 Chart 是根据父组件传过来的 dataPoints 数组进行 map 的,因此需要在父组件（新建一个父组件 ExpenseChart）里新建一组数组 chartDataPoints （也就是 dataPoints 指向的那个）。此数组里面每一个对象，需要包含子组件 Chart 所需要的属性 label 和 value，这样后续 Chart 才能拿到。
+   2. ExpenseChart 也需要拿到被选中年份的 expenses 的 array，然后根据月份进行 sum up，这个被选中年份的所有 expenses 的数据其实就是 Expenses 组件中的 filteredExpense。因此需要传给 ExpChart。
+   3. ExpChart 这边接到数据之后进行 for loop，把每一笔 expense 里面的月份用 getMonth 方法转换为月份-1 的数字，然后找到 chartDataPoint 数组里面相应 index 的 object，把这一笔 amount 累加到 object 的 value 里。最终得到一个新数组，value 为每个月 expense 的累加值。
+   4. 把加工好的 chartDataPoints 以 dataPoints 名字传给 Chart
+5. MaxValue
+   1. 目前 Chart 已经可以拿到需要的 value 和 label 了，剩下 maxValue
+   2. 在 Chart 里，从拿到的 dataPoints 中使用 map 方法把每个 dataPoint 转化为它自己的 value，这样就拿到了所有 value 的一个 array。
+   3. 用 Math.max 的方法拿到 array 中所有数字的最大值存给一个变量 totalMaximum
+   4. maxValue 就有值了
+6. 在新增 expense 功能中，新增的 value 是一个 string，应该改为 number 格式，可以在 ExpenseForm 中把 expenseData 的 amount 改为+enteredAmount，这样就可以转换为数字格式了。
+7. quiz：
+   1. Why should you add the special "key" prop to list JSX elements?
+      It's required for React to correctly identify and update(if needed) the list elements.
+   2. What's true about outputting conditional content in React components?
+      You can work with regular ternary expressions of if checks to output or return different results in / from your component.
